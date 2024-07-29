@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Demoscene</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+<audio id="background-audio" src="path/to/your/audio.wav" autoplay loop></audio>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    camera.position.z = 5;
+
+    let bouncing = false;
+    let scaleTarget = 1;
+    const scaleSpeed = 0.05;
+    const maxScale = 1.5;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        if (bouncing) {
+            cube.scale.x += (scaleTarget - cube.scale.x) * scaleSpeed;
+            cube.scale.y += (scaleTarget - cube.scale.y) * scaleSpeed;
+            cube.scale.z += (scaleTarget - cube.scale.z) * scaleSpeed;
+            
+            if (Math.abs(cube.scale.x - scaleTarget) < 0.01) {
+                if (scaleTarget === maxScale) {
+                    scaleTarget = 1;
+                } else {
+                    bouncing = false;
+                }
+            }
+        }
+        
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+    document.addEventListener('keydown', (event) => {
+        if (event.code === 'Space' && !bouncing) {
+            bouncing = true;
+            scaleTarget = maxScale;
+        }
+    });
+</script>
+</body>
+</html>
