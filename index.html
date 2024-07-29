@@ -28,21 +28,27 @@
 
     let bouncing = false;
     let scaleTarget = 1;
-    const scaleSpeed = 0.05;
+    const scaleSpeed = 0.02;
     const maxScale = 1.5;
+    const minScale = 1;
+    let scalingUp = true;
 
     function animate() {
         requestAnimationFrame(animate);
         
         if (bouncing) {
-            cube.scale.x += (scaleTarget - cube.scale.x) * scaleSpeed;
-            cube.scale.y += (scaleTarget - cube.scale.y) * scaleSpeed;
-            cube.scale.z += (scaleTarget - cube.scale.z) * scaleSpeed;
-            
-            if (Math.abs(cube.scale.x - scaleTarget) < 0.01) {
-                if (scaleTarget === maxScale) {
-                    scaleTarget = 1;
-                } else {
+            if (scalingUp) {
+                cube.scale.x += scaleSpeed;
+                cube.scale.y += scaleSpeed;
+                cube.scale.z += scaleSpeed;
+                if (cube.scale.x >= maxScale) {
+                    scalingUp = false;
+                }
+            } else {
+                cube.scale.x -= scaleSpeed;
+                cube.scale.y -= scaleSpeed;
+                cube.scale.z -= scaleSpeed;
+                if (cube.scale.x <= minScale) {
                     bouncing = false;
                 }
             }
@@ -58,7 +64,7 @@
     document.addEventListener('keydown', (event) => {
         if (event.code === 'Space' && !bouncing) {
             bouncing = true;
-            scaleTarget = maxScale;
+            scalingUp = true;
         }
     });
 </script>
